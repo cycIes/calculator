@@ -1,0 +1,31 @@
+#calculator {
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+    width: 300px;
+    background: rgb(200, 214, 226);
+    border-radius: 10px;
+    padding: 20px;
+}
+
+#display {
+    height: 100px;
+    background: rgb(235, 231, 225);
+    border-radius: 5px;
+    margin: 2px 2px 20px 2px;
+}
+
+.row {
+    display: flex;
+    justify-content: end;
+    flex: 1;
+}
+
+.row button {
+    /* width: 50px; */
+    flex: 1;
+    background: rgb(201, 201, 225);
+    border-color: rgb(201, 201, 225);
+    border-radius: 5px;
+    margin: 2px;
+}
