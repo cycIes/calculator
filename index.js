@@ -42,7 +42,13 @@ const display = document.querySelector("#display");
 let displayInput = "";
 
 function round(num) {
-
+    const text = toString(num);
+    let roundedNum = num;
+    if (text.length > 10) {
+        const tensMultiplier = Math.pow(10, 8);
+        roundedNum = Math.round(num * tensMultiplier) / tensMultiplier;
+    }
+    return roundedNum;
 }
 
 const calculator = document.querySelector("#calculator");
@@ -55,6 +61,10 @@ calculator.addEventListener("click", (event) => {
         num1 = "";
     }
 
+    console.log("Num1: " + num1);
+    console.log("Num2: " + num2);
+    console.log("Operator: " + operator);
+
     const num1Exists = num1 !== "";
     const num2Exists = num2 !== "";
     const operatorExists = operator !== "";
@@ -66,39 +76,55 @@ calculator.addEventListener("click", (event) => {
                 num1 = parseFloat(displayInput);
                 break;
             }
-            const num2Text = displayInput.substring(displayInput.indexOf(operator) + 1);
+            let operatorSymbol = operator;
+            if (operator === "*") {
+                operatorSymbol = "x";
+            }
+            const num2Text = displayInput.substring(displayInput.indexOf(operatorSymbol) + 1);
             num2 = parseFloat(num2Text);
             break;
         case "operator":
-            if (operatorExists && !num1Exists) {
-                break;
-            }
-            if (!operatorExists) {
-                if (!num1Exists) {
-                    num1 == 0;
-                    displayInput = "0";
-
-                }
-                const text = target.textContent;
+            const text = target.textContent;
+            if (operatorExists && num2Exists) {
+                const result = operate(num1, num2, operator);
+                num1 = result;
+                num2 = "";
                 if (text === "x") {
                     operator = "*";
                 } else {
-                    operator = text;
+                operator = text;
                 }
-                displayInput += text;
+                displayInput = num1 + text;
                 break;
             }
+            if (operatorExists && num1Exists) {
+                break;
+            }
+            if (!num1Exists) {
+                num1 == 0;
+                displayInput = "0";
+            }
+            if (text === "x") {
+                operator = "*";
+            } else {
+                operator = text;
+            }
+            displayInput += text;
             break;
         case "calculate":
+            if (!operatorExists) {
+                break;
+            }
             if (!num2Exists) {
                 num2 == 0;
             }
-            const result = operate(num1, num2, operator);
+            const result = round(operate(num1, num2, operator));
             num2 = operator = "";
             num1 = displayInput = result;
             break;
         case "clear":
             displayInput = "";
+            num1 = num2 = operator = "";
             break;
     }
     if (displayInput.length > 10) {
