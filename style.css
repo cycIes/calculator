@@ -35,7 +35,12 @@
     border-radius: 5px;
     box-shadow: none;
     margin: 2px;
+    font-size: 24px;
 }
+
+/* .clear {
+    background: rgb(248, 205, 148);
+} */
 
 .text {
     font-family: monospace;  
