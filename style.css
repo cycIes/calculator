@@ -3,16 +3,21 @@
     flex-direction: column;
     height: 400px;
     width: 300px;
-    background: rgb(200, 214, 226);
+    background: rgb(148, 168, 185);
     border-radius: 10px;
     padding: 20px;
 }
 
 #display {
     height: 100px;
-    background: rgb(235, 231, 225);
+    background: rgb(228, 222, 213);
     border-radius: 5px;
     margin: 2px 2px 20px 2px;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: right;
+    font-size: 48px;    
 }
 
 .row {
@@ -26,6 +31,13 @@
     flex: 1;
     background: rgb(201, 201, 225);
     border-color: rgb(201, 201, 225);
+    border-style: solid;
     border-radius: 5px;
+    box-shadow: none;
     margin: 2px;
+}
+
+.text {
+    font-family: monospace;  
+    color: rgb(148, 168, 185);
 }
