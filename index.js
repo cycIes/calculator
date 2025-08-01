@@ -67,9 +67,10 @@ calculator.addEventListener("click", (event) => {
     const target = event.target;
     const className = target.className.replace(" text", "").replace("text", "");
 
-    if ((displayInput === "Undefined" || displayInput === "Infinity") && className !== "") {
+    if ((displayInput === "Undefined" || displayInput === "Infinity" || displayInput === "-Infinity") && className !== "") {
         displayInput = "";
         num1 = "";
+        operator = "";
     }
 
     console.log("Num1: " + num1);
@@ -92,6 +93,10 @@ calculator.addEventListener("click", (event) => {
                 break;
             }
 
+            if (!num1Exists && target.textContent !== ".") {
+                displayInput = "";
+            }
+
             displayInput += text;
             if (!operatorExists) {
                 num1 = parseFloat(displayInput);
@@ -109,7 +114,7 @@ calculator.addEventListener("click", (event) => {
                 const result = operate(num1, num2, operator);
                 num1 = parseFloat(result);
                 num2 = "";
-                if (num1 === "Undefined" || num1 === Infinity) {
+                if (isNaN(num1) || num1 === Infinity || num1 === -Infinity) {
                     displayInput = "" + result;
                     break;
                 }
@@ -136,7 +141,9 @@ calculator.addEventListener("click", (event) => {
             }
             
             if (!num1Exists) {
-                if (text === "-") {
+                if (displayInput !== "") {
+                    num1 = parseFloat(displayInput);
+                } else if (text === "-") {
                     operator = "";
                     num1 = "-";
                     // break;
@@ -156,8 +163,7 @@ calculator.addEventListener("click", (event) => {
                 num2 = 0;
             }
             const result = round(operate(num1, num2, operator));
-            num2 = operator = "";
-            num1 = parseFloat(result);
+            num1 = num2 = operator = "";
             displayInput = "" + result;
             break;
         case "clear":
