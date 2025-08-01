@@ -106,6 +106,10 @@ function appendOperator(op) {
     const num2Exists = num2 !== "";
     const operatorExists = operator !== "";
 
+    if (op === "*") {
+        op = "x";
+    }
+
     if (operatorExists && num2Exists) {
         const result = round(operate(num1, num2, operator));
         num1 = result;
@@ -122,7 +126,6 @@ function appendOperator(op) {
             operator = op;
         }
 
-        displayInput = num1 + op;
         return;
     }
     if (operatorExists && num1Exists) {
@@ -212,6 +215,14 @@ function deleteChar() {
     num1 = ("" + num1).slice(0, -1);
 }
 
+function updateDisplay() {
+    if (displayInput.length > 10) {
+        display.textContent = displayInput.substring(displayInput.length - 10);
+        return;
+    }
+    display.textContent = displayInput;
+}
+
 calculator.addEventListener("click", (event) => {
     const target = event.target;
     const className = target.className.replace(" text", "").replace("text", "");
@@ -220,9 +231,9 @@ calculator.addEventListener("click", (event) => {
         clear();
     }
 
-    console.log("Num1: " + num1);
-    console.log("Num2: " + num2);
-    console.log("Operator: " + operator);
+    // console.log("Num1: " + num1);
+    // console.log("Num2: " + num2);
+    // console.log("Operator: " + operator);
     
     const text = target.textContent;
 
@@ -243,9 +254,36 @@ calculator.addEventListener("click", (event) => {
             deleteChar();
             break;
     }
-    if (displayInput.length > 10) {
-        display.textContent = displayInput.substring(displayInput.length - 10);
-        return;
+    
+    updateDisplay();
+})
+
+document.addEventListener("keydown", (event) => {
+    if (displayInput === "Undefined" || displayInput === "Infinity" || displayInput === "-Infinity") {
+        clear();
     }
-    display.textContent = displayInput;
+
+    // console.log("Num1: " + num1);
+    // console.log("Num2: " + num2);
+    // console.log("Operator: " + operator);
+
+    const key = event.key;
+
+    if ("1234567890.".includes(key)) {
+        appendDigit(key);
+    }
+
+    if ("+-*/x".includes(key)) {
+        appendOperator(key);
+    }
+
+    if (key === "Backspace") {
+        deleteChar();
+    }
+
+    if (key === "Enter") {
+        calculateAction();
+    }
+
+    updateDisplay();
 })
