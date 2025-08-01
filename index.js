@@ -2,6 +2,10 @@ let num1 = "";
 let num2 = "";
 let operator = "";
 
+const calculator = document.querySelector("#calculator");
+const display = document.querySelector("#display");
+let displayInput = "";
+
 function add(a, b) {
     return a + b;
 }
@@ -22,24 +26,24 @@ function divide(a, b) {
 }
 
 function operate(num1, num2, operator) {
+    const a = Number(num1);
+    const b = Number(num2);
+
     switch(operator) {
         case "+":
-            return add(num1, num2);
+            return add(a, b);
             break;
         case "-":
-            return subtract(num1, num2);
+            return subtract(a, b);
             break;
         case "*":
-            return multiply(num1, num2);
+            return multiply(a, b);
             break;
         case "/":
-            return divide(num1, num2);
+            return divide(a, b);
             break;
     }
 }
-
-const display = document.querySelector("#display");
-let displayInput = "";
 
 function round(num) {
     if (num === "Undefined") {
@@ -62,7 +66,6 @@ function round(num) {
     return roundedNum;
 }
 
-const calculator = document.querySelector("#calculator");
 calculator.addEventListener("click", (event) => {
     const target = event.target;
     const className = target.className.replace(" text", "").replace("text", "");
@@ -85,15 +88,19 @@ calculator.addEventListener("click", (event) => {
 
     switch(className) {
         case "digit":
-            if (target.textContent === "." && (!num1Exists || (operatorExists && !num2Exists))) {
+            if (text === "." && (!num1Exists || (operatorExists && !num2Exists))) {
                 displayInput += "0";
             }
 
-            if (text === "." && displayInput.includes(".") && (!operatorExists || num2Exists)) {
+            if (text === "." && displayInput.includes(".") && (!operatorExists || !num2Exists)) {
                 break;
             }
 
-            if (!num1Exists && target.textContent !== ".") {
+            if (text === "." && displayInput.includes(".", displayInput.indexOf(operator)) && num2Exists) {
+                break;
+            }
+
+            if (!num1Exists && text !== ".") {
                 displayInput = "";
             }
 
@@ -169,6 +176,39 @@ calculator.addEventListener("click", (event) => {
         case "clear":
             displayInput = "";
             num1 = num2 = operator = "";
+            break;
+        case "delete":
+            if (displayInput === "") {
+                break;
+            }
+
+            if (!num1Exists) {
+                displayInput = "";
+                break;
+            }
+
+            displayInput = displayInput.slice(0, -1);
+
+            if (operatorExists && !num2Exists) {
+                operator = "";
+                break;
+            }
+
+            if (num2Exists) {
+                if (("" + num2).length === 1) {
+                    num2 = "";
+                } else {
+                    num2 = parseFloat(("" + num2).slice(0, -1));
+                }
+                break;
+            }
+            
+            if (("" + num1).length === 1) {
+                num1 = "";
+            }
+
+            num1 = parseFloat(("" + num1).slice(0, -1));
+            
             break;
     }
     if (displayInput.length > 10) {
