@@ -26,21 +26,26 @@
     flex: 1;
 }
 
-.row button {
+button {
     /* width: 50px; */
     flex: 1;
     background: rgb(201, 201, 225);
     border-color: rgb(201, 201, 225);
     border-style: solid;
     border-radius: 5px;
-    box-shadow: none;
     margin: 2px;
     font-size: 24px;
 }
 
-/* .clear {
+.clear, .calculate {
     background: rgb(248, 205, 148);
-} */
+    border-color: rgb(248, 205, 148);
+}
+
+.operator {
+    background: rgb(185, 185, 211);
+    border-color: rgb(185, 185, 211);
+}
 
 .text {
     font-family: monospace;  
