@@ -60,7 +60,7 @@ function round(num) {
     }
 
     if (text.length > 10) {
-        const tensMultiplier = Math.pow(10, 8);
+        const tensMultiplier = Math.pow(10, 8 - roundedText.length);
         roundedNum = Math.round(num * tensMultiplier) / tensMultiplier;
     }
     return roundedNum;
@@ -106,7 +106,7 @@ calculator.addEventListener("click", (event) => {
 
             displayInput += text;
             if (!operatorExists) {
-                num1 = parseFloat(displayInput);
+                num1 = displayInput;
                 break;
             }
             let operatorSymbol = operator;
@@ -114,12 +114,12 @@ calculator.addEventListener("click", (event) => {
                 operatorSymbol = "x";
             }
             const num2Text = displayInput.substring(displayInput.lastIndexOf(operatorSymbol) + 1);
-            num2 = parseFloat(num2Text);
+            num2 = num2Text;
             break;
         case "operator":
             if (operatorExists && num2Exists) {
-                const result = operate(num1, num2, operator);
-                num1 = parseFloat(result);
+                const result = round(operate(num1, num2, operator));
+                num1 = result;
                 num2 = "";
                 if (isNaN(num1) || num1 === Infinity || num1 === -Infinity) {
                     displayInput = "" + result;
@@ -149,7 +149,7 @@ calculator.addEventListener("click", (event) => {
             
             if (!num1Exists) {
                 if (displayInput !== "") {
-                    num1 = parseFloat(displayInput);
+                    num1 = displayInput;
                 } else if (text === "-") {
                     operator = "";
                     num1 = "-";
@@ -198,7 +198,7 @@ calculator.addEventListener("click", (event) => {
                 if (("" + num2).length === 1) {
                     num2 = "";
                 } else {
-                    num2 = parseFloat(("" + num2).slice(0, -1));
+                    num2 = ("" + num2).slice(0, -1);
                 }
                 break;
             }
@@ -207,7 +207,7 @@ calculator.addEventListener("click", (event) => {
                 num1 = "";
             }
 
-            num1 = parseFloat(("" + num1).slice(0, -1));
+            num1 = ("" + num1).slice(0, -1);
             
             break;
     }
