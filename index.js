@@ -51,14 +51,13 @@ function round(num) {
     let roundedNum = num;
 
     if (roundedText.length > 10) {
-        roundedNum = (num.toPrecision(3));
+        roundedNum = (num.toPrecision(4));
         return roundedNum;
     }
 
     if (text.length > 10) {
-        // const tensMultiplier = Math.pow(10, 8);
-        // roundedNum = Math.round(num * tensMultiplier) / tensMultiplier;
-        roundedNum = (num.toPrecision(8));
+        const tensMultiplier = Math.pow(10, 8);
+        roundedNum = Math.round(num * tensMultiplier) / tensMultiplier;
     }
     return roundedNum;
 }
