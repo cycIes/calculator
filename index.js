@@ -66,149 +66,181 @@ function round(num) {
     return roundedNum;
 }
 
+function appendDigit(digit) {
+    const num1Exists = num1 !== "";
+    const num2Exists = num2 !== "";
+    const operatorExists = operator !== "";
+
+    if (digit === "." && (!num1Exists || (operatorExists && !num2Exists))) {
+        displayInput += "0";
+    }
+
+    if (digit === "." && num1.includes(".") && (!operatorExists)) {
+        return;
+    }
+
+    if (digit === "." && num2.includes(".")) {
+        return;
+    }
+
+    if (!num1Exists && digit !== ".") {
+        displayInput = "";
+    }
+
+    displayInput += digit;
+    if (!operatorExists) {
+        num1 = displayInput;
+        return;
+    }
+    let operatorSymbol = operator;
+    if (operator === "*") {
+        operatorSymbol = "x";
+    }
+    
+    const num2Text = displayInput.substring(displayInput.lastIndexOf(operatorSymbol) + 1);
+    num2 = num2Text;
+}
+
+function appendOperator(op) {
+    const num1Exists = num1 !== "";
+    const num2Exists = num2 !== "";
+    const operatorExists = operator !== "";
+
+    if (operatorExists && num2Exists) {
+        const result = round(operate(num1, num2, operator));
+        num1 = result;
+        num2 = "";
+
+        if (isNaN(num1) || num1 === Infinity || num1 === -Infinity) {
+            displayInput = "" + result;
+            return;
+        }
+
+        if (op === "x") {
+            operator = "*";
+        } else {
+            operator = op;
+        }
+
+        displayInput = num1 + op;
+        return;
+    }
+    if (operatorExists && num1Exists) {
+        return;
+    }
+
+    if (op === "x") {
+        operator = "*";
+    } else {
+        operator = op;
+    }
+
+    if (num1 === "-") {
+        operator = "";
+        return;
+    }
+            
+    if (!num1Exists) {
+        if (displayInput !== "") {
+            num1 = displayInput;
+        } else if (op === "-") {
+            operator = "";
+            num1 = "-";
+        } else {
+            num1 = 0;
+            displayInput = "0";
+        }
+    }
+
+    displayInput += op;
+}
+
+function calculateAction() {
+    const num2Exists = num2 !== "";
+    const operatorExists = operator !== "";
+
+    if (!operatorExists) {
+        return;
+            }
+    if (!num2Exists) {
+        num2 = 0;
+    }
+    const result = round(operate(num1, num2, operator));
+    num1 = num2 = operator = "";
+    displayInput = "" + result;
+}
+
+function clear() {
+    displayInput = "";
+    num1 = num2 = operator = "";
+}
+
+function deleteChar() {
+    const num1Exists = num1 !== "";
+    const num2Exists = num2 !== "";
+    const operatorExists = operator !== "";
+
+    if (displayInput === "") {
+        return;
+    }
+
+    if (!num1Exists) {
+        displayInput = "";
+        return;
+    }
+
+    displayInput = displayInput.slice(0, -1);
+
+    if (operatorExists && !num2Exists) {
+        operator = "";
+        return;
+    }
+
+    if (num2Exists) {
+        if (("" + num2).length === 1) {
+            num2 = "";
+        } else {
+            num2 = ("" + num2).slice(0, -1);
+        }
+        return;
+    }
+            
+    if (("" + num1).length === 1) {
+        num1 = "";
+    }
+
+    num1 = ("" + num1).slice(0, -1);
+}
+
 calculator.addEventListener("click", (event) => {
     const target = event.target;
     const className = target.className.replace(" text", "").replace("text", "");
 
     if ((displayInput === "Undefined" || displayInput === "Infinity" || displayInput === "-Infinity") && className !== "") {
-        displayInput = "";
-        num1 = "";
-        operator = "";
+        clear();
     }
 
     console.log("Num1: " + num1);
     console.log("Num2: " + num2);
     console.log("Operator: " + operator);
-
-    const num1Exists = num1 !== "";
-    const num2Exists = num2 !== "";
-    const operatorExists = operator !== "";
     
     const text = target.textContent;
 
     switch(className) {
         case "digit":
-            if (text === "." && (!num1Exists || (operatorExists && !num2Exists))) {
-                displayInput += "0";
-            }
-
-            if (text === "." && displayInput.includes(".") && (!operatorExists || !num2Exists)) {
-                break;
-            }
-
-            if (text === "." && displayInput.includes(".", displayInput.indexOf(operator)) && num2Exists) {
-                break;
-            }
-
-            if (!num1Exists && text !== ".") {
-                displayInput = "";
-            }
-
-            displayInput += text;
-            if (!operatorExists) {
-                num1 = displayInput;
-                break;
-            }
-            let operatorSymbol = operator;
-            if (operator === "*") {
-                operatorSymbol = "x";
-            }
-            const num2Text = displayInput.substring(displayInput.lastIndexOf(operatorSymbol) + 1);
-            num2 = num2Text;
+            appendDigit(text);
             break;
         case "operator":
-            if (operatorExists && num2Exists) {
-                const result = round(operate(num1, num2, operator));
-                num1 = result;
-                num2 = "";
-                if (isNaN(num1) || num1 === Infinity || num1 === -Infinity) {
-                    displayInput = "" + result;
-                    break;
-                }
-                if (text === "x") {
-                    operator = "*";
-                } else {
-                operator = text;
-                }
-                displayInput = num1 + text;
-                break;
-            }
-            if (operatorExists && num1Exists) {
-                break;
-            }
-            if (text === "x") {
-                operator = "*";
-            } else {
-                operator = text;
-            }
-
-            if (num1 === "-") {
-                operator = "";
-                break;
-            }
-            
-            if (!num1Exists) {
-                if (displayInput !== "") {
-                    num1 = displayInput;
-                } else if (text === "-") {
-                    operator = "";
-                    num1 = "-";
-                    // break;
-                } else {
-                    num1 = 0;
-                    displayInput = "0";
-                }
-            }
-
-            displayInput += text;
+            appendOperator(text);
             break;
         case "calculate":
-            if (!operatorExists) {
-                break;
-            }
-            if (!num2Exists) {
-                num2 = 0;
-            }
-            const result = round(operate(num1, num2, operator));
-            num1 = num2 = operator = "";
-            displayInput = "" + result;
+            calculateAction();
             break;
         case "clear":
-            displayInput = "";
-            num1 = num2 = operator = "";
+            clear();
             break;
         case "delete":
-            if (displayInput === "") {
-                break;
-            }
-
-            if (!num1Exists) {
-                displayInput = "";
-                break;
-            }
-
-            displayInput = displayInput.slice(0, -1);
-
-            if (operatorExists && !num2Exists) {
-                operator = "";
-                break;
-            }
-
-            if (num2Exists) {
-                if (("" + num2).length === 1) {
-                    num2 = "";
-                } else {
-                    num2 = ("" + num2).slice(0, -1);
-                }
-                break;
-            }
-            
-            if (("" + num1).length === 1) {
-                num1 = "";
-            }
-
-            num1 = ("" + num1).slice(0, -1);
-            
+            deleteChar();
             break;
     }
     if (displayInput.length > 10) {
