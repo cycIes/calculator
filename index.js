@@ -45,11 +45,20 @@ function round(num) {
     if (num === "Undefined") {
         return num;
     }
-    const text = toString(num);
+    const text = "" + num;
+    const roundedText = "" + Math.round(num);
+
     let roundedNum = num;
+
+    if (roundedText.length > 10) {
+        roundedNum = (num.toPrecision(3));
+        return roundedNum;
+    }
+
     if (text.length > 10) {
-        const tensMultiplier = Math.pow(10, 8);
-        roundedNum = Math.round(num * tensMultiplier) / tensMultiplier;
+        // const tensMultiplier = Math.pow(10, 8);
+        // roundedNum = Math.round(num * tensMultiplier) / tensMultiplier;
+        roundedNum = (num.toPrecision(8));
     }
     return roundedNum;
 }
@@ -59,7 +68,7 @@ calculator.addEventListener("click", (event) => {
     const target = event.target;
     const className = target.className.replace(" text", "").replace("text", "");
 
-    if ((displayInput === "Undefined" || displayInput === Infinity) && className !== "") {
+    if ((displayInput === "Undefined" || displayInput === "Infinity") && className !== "") {
         displayInput = "";
         num1 = "";
     }
@@ -99,7 +108,7 @@ calculator.addEventListener("click", (event) => {
         case "operator":
             if (operatorExists && num2Exists) {
                 const result = operate(num1, num2, operator);
-                num1 = result;
+                num1 = parseFloat(result);
                 num2 = "";
                 if (num1 === "Undefined" || num1 === Infinity) {
                     displayInput = "" + result;
@@ -121,15 +130,23 @@ calculator.addEventListener("click", (event) => {
             } else {
                 operator = text;
             }
+
+            if (num1 === "-") {
+                operator = "";
+                break;
+            }
+            
             if (!num1Exists) {
                 if (text === "-") {
                     operator = "";
+                    num1 = "-";
                     // break;
                 } else {
                     num1 = 0;
                     displayInput = "0";
                 }
             }
+
             displayInput += text;
             break;
         case "calculate":
@@ -141,7 +158,7 @@ calculator.addEventListener("click", (event) => {
             }
             const result = round(operate(num1, num2, operator));
             num2 = operator = "";
-            num1 = result;
+            num1 = parseFloat(result);
             displayInput = "" + result;
             break;
         case "clear":
